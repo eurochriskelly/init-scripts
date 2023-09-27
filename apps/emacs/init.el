@@ -8,6 +8,10 @@
  '(js2-strict-trailing-comma-warning t)
  '(package-selected-packages '(js2-mode ox-reveal frame-tabs)))
 
+;; Get rid of clutter
+(scroll-bar-mode -1)
+(tool-bar-mode -1)
+(setq inhibit-startup-screen t)
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -34,5 +38,6 @@
 ; (load "~/.emacs.d/config/codeium.el")
 
 (message "scripts loaded")
+
 
 
