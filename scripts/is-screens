@@ -1,0 +1,57 @@
+#!/bin/bash
+
+main() {
+    init
+    local option=$1
+    case $option in
+	--one|one|o|1)
+	    echo "main screen only selected"
+	    screenone
+	    ;;
+	--two|two|t|2)
+	    echo "second screen only selected"
+	    screentwo
+	    ;;
+	--both|both|b)
+	    echo "Two screens selected"
+	    twoscreens
+	    ;;
+	*)
+	    echo "Unknown option: $option"
+	    ;;
+    esac
+}
+init() {
+    SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+    if [ -f  "$SCRIPT_DIR/bash_common_private.sh" ];then
+	source $SCRIPT_DIR/bash_common_private.sh
+    else
+	echo "Error did not find required import script!"
+	exit 1
+    fi
+}
+check_missing_mode() {
+    mode="1920x1080_60.00"
+    modeExists=$(xrandr -q | awk '/^'$mon2' /{flag=1; next} /^ /{if(flag) print}' | grep "$mode")
+    if [ -z "$modeExists" ]; then
+        echo "Adding new mode!"
+        xrandr --newmode "1920x1080_60.00" 173.00  1920 2048 2248 2576  1080 1083 1088 1120 -hsync +vsync
+        xrandr --addmode $mon2 "1920x1080_60.00"
+    fi
+}
+screentwo() {
+    xrandr --output $mon1 --off
+    check_missing_mode
+    xrandr --output $mon2 --mode "1920x1080_60.00"
+    xrandr --output $mon2 --auto
+}
+screenone() {
+    xrandr --output $mon2 --off
+    xrandr --output $mon1 --mode 3840x2160
+    xrandr --output $mon1 --auto
+}
+twoscreens() {
+    xrandr --output $mon1 --auto --output $mon2 --auto --right-of $mon1
+}
+
+main "$@"
