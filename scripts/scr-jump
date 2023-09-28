@@ -1,0 +1,45 @@
+#!/bin/bash
+
+jump() {
+    local jump_list
+    local choice
+
+    rc_file="$HOME/.jump.rc"
+    jump_list=()
+
+    if [[ -f "$rc_file" ]]; then
+        while IFS= read -r line; do
+            jump_list+=("$line")
+        done < "$rc_file"
+
+        if [[ ${#jump_list[@]} -eq 0 ]]; then
+            echo "No jump paths found in $rc_file"
+            return
+        fi
+
+        for ((i = 0; i < ${#jump_list[@]}; i++)); do
+            echo "$((i + 1)). ${jump_list[i]}"
+        done
+
+        read -p "Enter the number to jump (e to edit|0 to exit): " choice
+
+	if [[ $choice == 'e' ]];then
+	    echo "EDITOR: $EDITOR"
+	    eval "$EDITOR $rc_file"
+	    return
+	fi
+
+        if [[ $choice -gt 0 && $choice -le ${#jump_list[@]} ]]; then
+            selected_path="${jump_list[choice - 1]}"
+            cd "$selected_path" || return
+            echo "Navigated to: $selected_path"
+        elif [[ $choice -eq 0 ]]; then
+            return
+        else
+            echo "Invalid choice. Please enter a valid number."
+        fi
+    else
+        echo "File $rc_file not found"
+    fi
+}
+

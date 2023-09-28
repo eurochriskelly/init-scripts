@@ -10,6 +10,8 @@ else
 fi
 
 ISPATH="$REPO_DIR/init-scripts"
+export EDITOR=emacs
+
 for file in "$ISPATH"/scripts/*; do
     if [[ "$file" == *~ ]]; then
 	continue
@@ -24,6 +26,16 @@ if [ -z "$(which screens)" ];then
     export PATH="$PATH:${ISPATH}/scripts"
 fi
 
+# Source commands
+for scr in scr-jump;do
+    if [ -f "$ISPATH"/scripts/"$scr" ];then
+	echo "sourcing path $scr"
+	source $ISPATH/scripts/$scr
+    else
+	echo "Could not find script [$scr]"
+    fi
+done
+
 alias src='source ~/.bashrc'
 alias ssh-mac='ssh -q $MACVM'
 alias fuse-mac='sshfs $MACVM:/Users/${MACUSER}/Workspace ~/Workspace/mac'
@@ -32,9 +44,11 @@ alias pb='echo "">/tmp/pb;et /tmp/pb;cat /tmp/pb | xclip -selection clipboard'
 alias et='emacsclient-snapshot -t $1'
 alias etg='emacsclient-snapshot -c $1'
 alias be='emacs-snapshot ~/.bashrc'
+alias j='jump'
 
 # easy to remember aliases for init scripts
 alias screens="is-screens"
+
 
 alias aaa="cat $ISPATH/scripts/bash_common.sh|grep \"^alias\"|awk '{print $2}'| awk -F= '{print $1}'"
 echo "Run 'aaa' to see aliases"
