@@ -43,3 +43,68 @@ jump() {
     fi
 }
 
+# quickly edit files that have recently been editted with this command
+quickEdit() {
+    # TODO: accept a filter param to reduce list
+    echo "Welcome to quick edit!"
+    rc_file="$HOME/.quick-edit.rc"
+    if [ ! -f "$rc_file" ];then touch $rc_file;fi
+    if [ "$#" -lt 1 ];then
+	echo "Available files:"
+	declare selected_file
+	menu_select_file "$rc_file" selected_file
+	if [[ -n $selected_file ]]; then
+	    # further increase priority
+	    echo $selected_file >> $rc_file
+	    eval $EDITOR $selected_file
+	else
+	    echo "Nothing selected to edit!"
+	    exit 0
+	fi
+    else
+	echo $(realpath $1) >> $rc_file
+	eval $EDITOR $1
+    fi
+}
+
+menu_select_file() {
+    local filepath="$1"
+    local -n return_var="$2"
+    if [[ ! -f "$filepath" ]]; then
+	echo "File not found: $filepath"
+	return 1
+    fi
+
+    # Read file and remove duplicates
+    local options=()
+    mapfile -t options < <(sort "$filepath" | uniq -c | sort -rn | awk '{ $1=""; print $0 }' | sed 's/^[ \t]*//')
+
+    # Show menu to user
+    for i in "${!options[@]}"; do
+	pi=$((i + 1))
+	f=${options[$i]}
+	b=$(basename $f)
+	printf "%5s %-20s %s\n" "$pi" "$b" "$f"
+    done
+
+    # Get user selection
+    read -p "Select a file: " selection
+
+    if [[ ! "$selection" =~ ^[0-9]+$ ]] || (( selection < 1 || selection > ${#options[@]} )); then
+	echo "Invalid selection"
+	return 1
+    fi
+
+    # Store selected file path into the provided variable by reference
+    return_var="${options[$((selection - 1))]}"
+}
+
+
+# Example usage
+order_files_by_frequency
+
+
+
+# Example usage with your input
+echo -e "f1\nf2\nf1\nf1\nf4\nf3\nf1" | order_files_by_frequency
+

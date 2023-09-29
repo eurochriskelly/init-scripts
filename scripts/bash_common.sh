@@ -39,12 +39,13 @@ done
 alias src='source ~/.bashrc'
 alias ssh-mac='ssh -q $MACVM'
 alias fuse-mac='sshfs $MACVM:/Users/${MACUSER}/Workspace ~/Workspace/mac'
-alias go:repos='cd $REPO_DIR'
 alias pb='echo "">/tmp/pb;et /tmp/pb;cat /tmp/pb | xclip -selection clipboard'
-alias et='emacsclient-snapshot -t $1'
-alias etg='emacsclient-snapshot -c $1'
+alias et='emacsClientHereText'
+alias etg='emacsClientHereGui'
+# TODO: better to maintain recent list and sort by frequency
 alias be='emacs-snapshot ~/.bashrc'
 alias j='jump'
+alias e='quickEdit'
 
 # easy to remember aliases for init scripts
 alias screens="is-screens"
