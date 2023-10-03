@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# Make stumpwm the default window manager
+# 
+exec stumpwm

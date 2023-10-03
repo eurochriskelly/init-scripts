@@ -100,11 +100,3 @@ menu_select_file() {
 }
 
 
-# Example usage
-order_files_by_frequency
-
-
-
-# Example usage with your input
-echo -e "f1\nf2\nf1\nf1\nf4\nf3\nf1" | order_files_by_frequency
-

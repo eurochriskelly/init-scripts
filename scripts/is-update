@@ -6,9 +6,15 @@
 #
 set -e
 
+# TODO: check os before install stumpw
+
+# Switch to this directory
+cd "$(dirname "$0")"/..
+
 # update Xresources
 echo "Updating xresources ..."
 cp config/Xresources ~/.Xresources
+cp config/xinitrc ~/.xinitrc
 cd ~
 xrdb -merge .Xresources
 cd -
@@ -22,5 +28,3 @@ cp -r apps/emacs/* ~/.emacs.d/
 # update tmux
 echo "Updating tmux ..."
 cp apps/tmux/tmux.conf ~/.tmux.conf
-
-

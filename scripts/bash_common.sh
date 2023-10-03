@@ -27,10 +27,11 @@ if [ -z "$(which screens)" ];then
 fi
 
 # Source commands
-for scr in scr-jump;do
-    if [ -f "$ISPATH"/scripts/"$scr" ];then
+rm $ISPATH/scripts/*~
+for scr in $ISPATH/scripts/scr-*;do
+    if [ -f "$scr" ];then
 	echo "sourcing path $scr"
-	source $ISPATH/scripts/$scr
+	source $scr
     else
 	echo "Could not find script [$scr]"
     fi
