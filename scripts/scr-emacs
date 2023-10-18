@@ -11,5 +11,5 @@ emacsClientHereGui() {
 emacsClientHereText() {
     # TODO: launch daemon if not already running
     local f=${1:-.}
-    emacsclient-snapshot -c $1
+    emacsclient-snapshot -t $1
 }
