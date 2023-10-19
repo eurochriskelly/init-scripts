@@ -1,15 +1,26 @@
 #!/bin/bash
 
+# TODO: Add a filter option. e.g. j "gaelic" only show matching folders
+
+
 jump() {
     local jump_list
     local choice
 
+    
     rc_file="$HOME/.jump.rc"
     jump_list=()
 
     if [[ -f "$rc_file" ]]; then
         while IFS= read -r line; do
-            jump_list+=("$line")
+	    # filter if a param was provided
+	    if [ -n $1 ];then
+		if [[ "$line" == *"$1"* ]];then
+		    jump_list+=("$line")
+		fi
+	    else
+		jump_list+=("$line")
+	    fi
         done < "$rc_file"
 
         if [[ ${#jump_list[@]} -eq 0 ]]; then
@@ -21,12 +32,35 @@ jump() {
             echo "$((i + 1)). ${jump_list[i]}"
         done
 
-        read -p "Enter the number to jump (e to edit|0 to exit): " choice
+	echo ""
+        read -p "Enter the number to jump [Edit|Add|Remove|eXit): " choice
 
+	# edit the list
 	if [[ $choice == 'e' ]];then
 	    echo "EDITOR: $EDITOR"
 	    eval "$EDITOR $rc_file"
 	    return
+	fi
+
+	# add current folder
+	if [[ $choice == 'a' ]];then
+	    echo $(pwd) >> $rc_file
+	    local tmp=/tmp/rc_jump_$(date +%s)
+	    cat $rc_file | sort | uniq > $tmp
+	    mv $tmp $rc_file
+	    return
+	fi
+
+	# remove exact match folder
+	if [[ $choice == 'r' ]];then
+	    local tmp=/tmp/rc_jump_$(date +%s)
+	    cat $rc_file | grep -v "^$(pwd)$" | sort | uniq > $tmp
+	    mv $tmp $rc_file
+	    return
+	fi
+
+	if [[ $choice == "x" ]];then
+	    choice=0
 	fi
 
         if [[ $choice -gt 0 && $choice -le ${#jump_list[@]} ]]; then
