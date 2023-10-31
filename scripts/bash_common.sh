@@ -1,15 +1,17 @@
 #!/bin/bash
 
-priv=~/Workspace/repos/init-scripts/scripts/bash_common_private.sh
+priv=$HOME/Workspace/repos/init-scripts/scripts/bash_common_private.sh
 if [ -f "$priv" ];then
+    echo "Sourcing private bash"
     source "$priv"
 else
-    ls ~/Workspace/repos/init-scripts/S
+    ls $HOME/Workspace/repos/init-scripts
     echo "Could not source private shared vars"
     exit 1
 fi
 
 ISPATH="$REPO_DIR/init-scripts"
+
 export EDITOR=emacs
 
 for file in "$ISPATH"/scripts/*; do
@@ -27,7 +29,7 @@ if [ -z "$(which screens)" ];then
 fi
 
 # Source commands
-rm $ISPATH/scripts/*~
+find $ISPATH/scripts -name "*~" -exec rm {} \;
 for scr in $ISPATH/scripts/scr-*;do
     if [ -f "$scr" ];then
 	echo "sourcing path $scr"
@@ -37,14 +39,14 @@ for scr in $ISPATH/scripts/scr-*;do
     fi
 done
 
-alias src='source ~/.bashrc'
+alias src='source $HOME/.zshrc'
 alias ssh-mac='ssh -q $MACVM'
 alias fuse-mac='sshfs $MACVM:/Users/${MACUSER}/Workspace ~/Workspace/mac'
 alias pb='echo "">/tmp/pb;et /tmp/pb;cat /tmp/pb | xclip -selection clipboard'
 alias et='emacsClientHereText'
 alias etg='emacsClientHereGui'
 # TODO: better to maintain recent list and sort by frequency
-alias be='emacs-snapshot ~/.bashrc'
+alias be='emacs-snapshot $HOME/.bashrc'
 alias j='jump'
 alias e='quickEdit'
 
