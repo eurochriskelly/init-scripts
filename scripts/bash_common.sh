@@ -52,6 +52,9 @@ alias e='quickEdit'
 
 # easy to remember aliases for init scripts
 alias screens="is-screens"
+alias ds2="dirSizer 2"
+alias ds3="dirSizer 3"
+alias ds4="dirSizer 4"
 
 
 alias aaa="cat $ISPATH/scripts/bash_common.sh|grep \"^alias\"|awk '{print $2}'| awk -F= '{print $1}'"
