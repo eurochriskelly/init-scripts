@@ -1,6 +1,11 @@
+# Set up
+
+In your main shellrc file source `scripts/bash_common.sh`
 
 
-File structure:
+# Repo file structure
+
+## Apps
 
   Apps/
 	bash

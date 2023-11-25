@@ -1,15 +1,25 @@
 #!/bin/bash
 
+getEmacsClient() {
+    local ec=$(which emacsclient-snapshot 2>&1 > /dev/null)
+    if [ -z "$ec" ];then
+	ec=$(which emacsclient)
+    fi
+    echo "$ec"
+}
+
 # open emacs in gui mode
 emacsClientHereGui() {
     # TODO: launch daemon if not already running
     local f=${1:-.}
-    emacsclient-snapshot -c $1
+    local ec=$(getEmacsClient)
+    "$ec" -c $1
 }
 
 # open emacs in text mode
 emacsClientHereText() {
     # TODO: launch daemon if not already running
     local f=${1:-.}
-    emacsclient-snapshot -t $1
+    local ec=$(getEmacsClient)
+    "$ec" -t $1
 }
