@@ -1,8 +1,8 @@
 #!/bin/bash
 
-set -e
-
 function find_biggest() {
+    set -e
+    
     local level=$1
     local max_level=$2
 
