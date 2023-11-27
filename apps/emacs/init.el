@@ -8,6 +8,7 @@
  '(js2-strict-trailing-comma-warning t)
  '(package-selected-packages '(js2-mode ox-reveal frame-tabs)))
 
+
 ;; Get rid of clutter
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
