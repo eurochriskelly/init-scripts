@@ -1,3 +1,5 @@
+;; Preferred interface settings
+
 (ido-mode t)
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -20,25 +22,3 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
-
-(require 'package)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
-(package-initialize)
-
-(require 'ox-reveal)
-
-(add-to-list 'auto-mode-alist '("\\.sjs\\'" . js2-mode))
-(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
-
-(require 'package)
-(add-to-list 'package-archives
-   '("melpa" . "https://melpa.org/packages/") t)
-
-; (add-to-list 'load-path "~/.emacs.d/codeium.el")
-; (load "~/.emacs.d/config/codeium.el")
-
-(message "scripts loaded")
-
-
-
