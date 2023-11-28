@@ -51,6 +51,8 @@ screenone() {
     xrandr --output $mon1 --auto
 }
 twoscreens() {
+    screenone
+    screentwo
     xrandr --output $mon1 --auto --output $mon2 --auto --right-of $mon1
 }
 
