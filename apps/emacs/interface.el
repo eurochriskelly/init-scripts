@@ -12,8 +12,11 @@
 
 
 ;; Get rid of clutter
-(scroll-bar-mode -1)
-(tool-bar-mode -1)
+(if (fboundp 'scroll-bar-mode)
+    (scroll-bar-mode -1))
+(if (fboundp 'tool-bar-mode)
+    (tool-bar-mode -1))
+
 (setq inhibit-startup-screen t)
 
 (custom-set-faces
