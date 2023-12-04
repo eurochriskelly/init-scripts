@@ -10,8 +10,6 @@ cd $SCRIPT_DIR
 top=$(git rev-parse --show-toplevel)
 cd $top
 
-touch /tmp/auto-commit.log
-
 echo "Committing files from [$(pwd)] and pushing"
 git stash
 git pull
@@ -19,4 +17,5 @@ git stash pop
 git add .
 git commit -m "Daily automated commit on $(date)"
 git push origin main
+echo "Auto-commit complete"
 
