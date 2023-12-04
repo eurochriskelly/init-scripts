@@ -7,7 +7,7 @@
 ;; Load other scripts using the determined directory
 (load-file (concat current-dir "interface.el"))
 (load-file (concat current-dir "keyboard.el"))
-;; (load-file (concat current-dir "copilot.el"))
+(load-file (concat current-dir "copilot.el"))
 
 ;; Package management with melpa
 (require 'package)

@@ -5,11 +5,12 @@
 # 0 0 * * * /path/to/scripts/auto-commit.sh
 #
 
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd $SCRIPT_DIR
 top=$(git rev-parse --show-toplevel)
-
-touch /tmp/auto-commit log
-
 cd $top
+
+touch /tmp/auto-commit.log
 
 echo "Committing files from [$(pwd)] and pushing"
 git stash

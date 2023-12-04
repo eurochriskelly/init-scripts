@@ -2,11 +2,11 @@
 (message "Setting up copilot ...")
 
 ;; you can utilize :map :hook and :config to customize copilot
-(use-package copilot
-  :quelpa (copilot :fetcher github
-                   :repo "zerolfx/copilot.el"
-                   :branch "main"
-                   :files ("dist" "*.el")))
+;; (use-package copilot
+;;   :quelpa (copilot :fetcher github
+;;                    :repo "zerolfx/copilot.el"
+;;                    :branch "main"
+;;                    :files ("dist" "*.el")))
 ;; you can utilize :map :hook and :config to customize copilot
 
 (message "Setting up copilot ... 2")
