@@ -2,13 +2,10 @@
 
 #
 # In your ~/.crontab place the following:
-# 0 0 * * * /path/to/scripts/auto-commit.sh
+# 0 0 * * * /path/to/scripts/auto-commit.sh /path/to/repo > /tmp/log123 2>&1
 #
 
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-cd $SCRIPT_DIR
-top=$(git rev-parse --show-toplevel)
-cd $top
+cd $1
 
 echo "Committing files from [$(pwd)] and pushing"
 git stash
