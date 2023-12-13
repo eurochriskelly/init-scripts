@@ -3,9 +3,8 @@
 (message "Loading my scripts ..")
 (defvar current-dir (file-name-directory load-file-name))
 
-
-
 ;; Load other scripts using the determined directory
+(load-file (concat current-dir "modes.el"))
 (load-file (concat current-dir "interface.el"))
 (load-file (concat current-dir "keyboard.el"))
 (load-file (concat current-dir "copilot.el"))
@@ -27,7 +26,9 @@
 ;; Customizations
 (load-file (concat current-dir "./my-org.el"))
 
+(if (functionp 'global-wakatime-mode)
+    (global-wakatime-mode)
+  (message "global-wakatime-mode is not installed."))
+
 (message "My scripts loaded")
 
-;; TODO: check that wakatime mode is installed first
-(global-wakatime-mode)
