@@ -4,6 +4,7 @@
 (defvar current-dir (file-name-directory load-file-name))
 
 
+
 ;; Load other scripts using the determined directory
 (load-file (concat current-dir "interface.el"))
 (load-file (concat current-dir "keyboard.el"))
@@ -27,3 +28,6 @@
 (load-file (concat current-dir "./my-org.el"))
 
 (message "My scripts loaded")
+
+;; TODO: check that wakatime mode is installed first
+(global-wakatime-mode)
