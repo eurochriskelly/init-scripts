@@ -1,0 +1,28 @@
+#!/bin/bash
+
+mygit() {
+	cd ~/Workspace/repos
+	# each of the folders here is a git directory
+	# enter each directory and check the git status.
+	# If the status is not clean, print the directory name and the status.
+	for dir in *; do
+		if [ -d "$dir" ]; then
+			cd "$dir"
+			if [ -d ".git" ]; then
+				if [ -z "$(git status | grep 'nothing to commit')" ]; then
+					echo ""
+					echo "------------------- $dir -------------------"
+					git status | grep 'On branch'
+					if [ -f MYGIT_TODO.org ]; then
+						echo "    --- todo list ---"
+						  cat MYGIT_TODO.org | while read line; do
+							echo "    $line"
+						done
+					fi
+				  git status | grep -v 'On branch'
+				fi
+			fi
+			cd ..
+		fi
+	done
+}
