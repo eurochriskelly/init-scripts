@@ -75,7 +75,7 @@ jump() {
 		fi
 
 		if [[ $choice -gt 0 && $choice -le ${#jump_list[@]} ]]; then
-			selected_path="${jump_list[choice - 1]}"
+			selected_path="${jump_list[choice]}"
 			cd "$selected_path" || return
 			echo "Navigated to: $selected_path"
 		elif [[ $choice -eq 0 ]]; then
