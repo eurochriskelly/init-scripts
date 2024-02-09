@@ -5,6 +5,7 @@ mygit() {
 	# each of the folders here is a git directory
 	# enter each directory and check the git status.
 	# If the status is not clean, print the directory name and the status.
+  clear
 	for dir in *; do
 		if [ -d "$dir" ]; then
 			cd "$dir"
