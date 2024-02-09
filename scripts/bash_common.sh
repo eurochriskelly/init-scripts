@@ -1,18 +1,8 @@
 #!/bin/bash
 
-priv=$HOME/Workspace/repos/init-scripts/scripts/bash_common_private.sh
-if [ -f "$priv" ]; then
-    echo "Sourcing private bash"
-    source "$priv"
-else
-    ls $HOME/Workspace/repos/init-scripts
-    echo "Could not source private shared vars"
-    exit 1
-fi
-
 ISPATH="$REPO_DIR/init-scripts"
 
-export EDITOR=emacs
+export EDITOR=nvim
 
 # make scripts executable
 for file in "$ISPATH"/scripts/*; do
@@ -61,5 +51,17 @@ alias ds2="dirSizer 2"
 alias ds3="dirSizer 3"
 alias ds4="dirSizer 4"
 
+priv=$HOME/Workspace/repos/init-scripts/scripts/bash_common_private.sh
+if [ -f "$priv" ]; then
+    echo "Sourcing private bash"
+    source "$priv"
+else
+    ls $HOME/Workspace/repos/init-scripts
+    echo "Could not source private shared vars"
+    exit 1
+fi
+
 alias aaa="cat $ISPATH/scripts/bash_common.sh|grep \"^alias\"|awk '{print $2}'| awk -F= '{print $1}'"
 echo "Run 'aaa' to see aliases"
+
+

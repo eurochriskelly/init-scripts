@@ -1,6 +1,8 @@
 #!/bin/bash
-
-# TODO: Add a filter option. e.g. j "gaelic" only show matching folders
+#
+# Jump to a folder quickly
+#
+#
 
 touch $HOME/.jump.rc
 
@@ -12,6 +14,7 @@ jump() {
 	jump_list=()
 
 	if [[ -f "$rc_file" ]]; then
+    echo "\033[33mChoose folder to jump to:\033[0m"
 		while IFS= read -r line; do
 			if [ -z "$line" ]; then
 				continue
@@ -23,21 +26,24 @@ jump() {
 					jump_list+=("$line")
 				fi
 			else
-				jump_list+=("$line")
+				if [ -n "$line" ]; then
+					jump_list+=("$line")
+				fi
 			fi
 		done <"$rc_file"
+
 
 		if [[ ${#jump_list[@]} -eq 0 ]]; then
 			echo "No jump paths found in $rc_file"
 			return
 		fi
 
-		for ((i = 0; i < ${#jump_list[@]}; i++)); do
+    for ((i = 1; i <= ${#jump_list[@]}; i++)); do
 			item=${jump_list[i]}
-			echo "$((i + 1)). $item"
+			echo "$((i)). $item"
 		done
 
-		echo -n "Enter jump # [Edit|Add|Remove|eXit): "
+		echo -n "Enter jump \033[33m#\033[0m \033[34m[\033[0m\033[33mEdit\033[0m\033[34m|\033[0m\033[33mAdd\033[0m\033[34m|\033[0m\033[33mRemove\033[0m\033[34m|\033[0m\033[33meXit\033[0m\033[34m):\033[0m "
 		read choice
 
 		# edit the list
@@ -69,7 +75,7 @@ jump() {
 		fi
 
 		if [[ $choice -gt 0 && $choice -le ${#jump_list[@]} ]]; then
-			selected_path="${jump_list[choice - 1]}"
+			selected_path="${jump_list[choice]}"
 			cd "$selected_path" || return
 			echo "Navigated to: $selected_path"
 		elif [[ $choice -eq 0 ]]; then
