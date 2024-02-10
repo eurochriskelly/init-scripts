@@ -36,7 +36,7 @@ mygit() {
 }
 
 offerSwitch() {
-  echo -ne "\e[33mSwitch to a directory? (y/n): \e[0m"
+	echo -ne "\e[33mSwitch to a directory? (y/n): \e[0m"
 	read choice
 	if [ "$choice" = "y" ]; then
 		echo -n "Enter the number of the directory: "
@@ -47,7 +47,7 @@ offerSwitch() {
 
 		# Convert jumpList into a newline-separated format and iterate over it
 		echo "$jumpList" | tr ' ' '\n' | while read dir; do
-      if [ "$i" -eq "$((choiceNum + 1))" ]; then
+			if [ "$i" -eq "$((choiceNum + 1))" ]; then
 				cd "$dir" && echo "Switched to $dir"
 				found="yes"
 				break # Note: 'break' won't work as expected in a pipe
