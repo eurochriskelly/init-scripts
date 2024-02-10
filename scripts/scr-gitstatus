@@ -1,29 +1,62 @@
-#!/bin/bash
+#!/bin/sh
 
 mygit() {
-	cd ~/Workspace/repos
 	# each of the folders here is a git directory
 	# enter each directory and check the git status.
 	# If the status is not clean, print the directory name and the status.
-  clear
+	jumpList=""
+	clear
+	echo "Current directory: $(pwd)"
+	cd ~/Workspace/repos
+	ii=1
 	for dir in *; do
 		if [ -d "$dir" ]; then
 			cd "$dir"
 			if [ -d ".git" ]; then
 				if [ -z "$(git status | grep 'nothing to commit')" ]; then
+					# Add this directory to the jump list
+					jumpList="$jumpList $dir"
 					echo ""
-					echo "------------------- $dir -------------------"
+					echo -e "\e[33m${ii} ------------------- $dir -------------------\e[0m"
+					ii=$((ii + 1))
 					git status | grep 'On branch'
 					if [ -f MYGIT_TODO.org ]; then
 						echo "    --- todo list ---"
-						  cat MYGIT_TODO.org | while read line; do
+						cat MYGIT_TODO.org | while read line; do
 							echo "    $line"
 						done
 					fi
-				  git status | grep -v 'On branch'
+					git status | grep -v 'On branch'
 				fi
 			fi
 			cd ..
 		fi
 	done
+	offerSwitch
+}
+
+offerSwitch() {
+	echo -ne "\e[33mSwitch to a directory? (y/n): \e[0m"
+	read choice
+	if [ "$choice" = "y" ]; then
+		echo -n "Enter the number of the directory: "
+		read choiceNum
+
+		local i=1
+		local found=""
+
+		# Convert jumpList into a newline-separated format and iterate over it
+		echo "$jumpList" | tr ' ' '\n' | while read dir; do
+			if [ "$i" -eq "$((choiceNum + 1))" ]; then
+				cd "$dir" && echo "Switched to $dir"
+				found="yes"
+				break # Note: 'break' won't work as expected in a pipe
+			fi
+			i=$((i + 1))
+		done
+
+		if [ -z "$found" ]; then
+			echo "Invalid directory number or unable to switch directory."
+		fi
+	fi
 }
