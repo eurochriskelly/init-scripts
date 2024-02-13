@@ -2,28 +2,48 @@
 
 mygit() {
 	cd ~/Workspace/repos
+	local onbranch=""
 	# each of the folders here is a git directory
 	# enter each directory and check the git status.
 	# If the status is not clean, print the directory name and the status.
-  clear
+	clear
 	for dir in *; do
 		if [ -d "$dir" ]; then
-			cd "$dir"
+			cd "$dir" 2>/dev/null
 			if [ -d ".git" ]; then
+				# This is a git dir. We need to ...
+				# 1. check if there are any changes.
+				# 2. Check if we are on the main branch an if not print the repo and branch name
+
+				# 1. check if there are any changes.
 				if [ -z "$(git status | grep 'nothing to commit')" ]; then
 					echo ""
-					echo "------------------- $dir -------------------"
+					hh "------------------- $dir -------------------"
 					git status | grep 'On branch'
 					if [ -f MYGIT_TODO.org ]; then
 						echo "    --- todo list ---"
-						  cat MYGIT_TODO.org | while read line; do
+						cat MYGIT_TODO.org | while read line; do
 							echo "    $line"
 						done
 					fi
-				  git status | grep -v 'On branch'
+					git status \
+            | grep -v 'On branch' \
+            | grep -v 'use "git'
+				fi
+
+				# 2. Check if we are on the main branch an if not print the repo and branch name
+				if [ -z "$(git status | grep 'On branch ma')" ]; then
+          onbranch="${onbranch}$(printf '\033[0;34m%-20s\033[0m > %s\n' "${dir}" "$(git status | grep 'On branch' | sed 's/On branch //')")\n"
 				fi
 			fi
 			cd ..
 		fi
 	done
+	hh "----------- Repos not on main branch -----------"
+	echo -e "$onbranch"
+}
+
+hh() {
+	# print in yellow the line passed by user
+	echo -e "\e[33m$@\e[0m"
 }
