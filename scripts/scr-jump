@@ -5,17 +5,19 @@
 #
 #
 
-touch $HOME/.jump.rc
+rc_file="$HOME/.jump.rc"
+log_file="$HOME/.jump.log"
+touch $rc_file $log_file
 
 jump() {
 	local jump_list
 	local choice
 
-	rc_file="$HOME/.jump.rc"
+	sort $log_file | head -n 1000 | awk '{print $2}' | sort | uniq -c | sort -nr | awk '{print $2}' >$rc_file
 	jump_list=()
 
 	if [[ -f "$rc_file" ]]; then
-    echo "\033[33mChoose folder to jump to:\033[0m"
+		echo "\033[33mChoose folder to jump to:\033[0m"
 		while IFS= read -r line; do
 			if [ -z "$line" ]; then
 				continue
@@ -34,18 +36,29 @@ jump() {
 
 		done <"$rc_file"
 
-
 		if [[ ${#jump_list[@]} -eq 0 ]]; then
 			echo "No jump paths found in $rc_file"
 			return
 		fi
 
-    for ((i = 1; i <= ${#jump_list[@]}; i++)); do
+		for ((i = 1; i <= ${#jump_list[@]}; i++)); do
 			item=${jump_list[i]}
+      # if item contains the value of $HOME, replace it with ~
+      if [[ $item == *"$HOME"* ]]; then
+        item=${item/$HOME/\~}
+      fi
 			echo "$((i)). $item"
 		done
 
-		echo -n "Enter jump \033[33m#\033[0m \033[34m[\033[0m\033[33mEdit\033[0m\033[34m|\033[0m\033[33mAdd\033[0m\033[34m|\033[0m\033[33mRemove\033[0m\033[34m|\033[0m\033[33meXit\033[0m\033[34m):\033[0m "
+		local prompt=""
+		prompt="${prompt}Enter jump "
+		prompt="${prompt}\033[33m#\033[0m "
+		prompt="${prompt}\033[34m[\033[0m"
+		prompt="${prompt}\033[33mEdit\033[0m"
+		prompt="${prompt}\033[34m|\033[0m"
+		prompt="${prompt}\033[33mAdd\033[0m"
+		prompt="${prompt}\033[34m):\033[0m "
+		echo -e $prompt
 		read choice
 
 		# edit the list
@@ -57,18 +70,7 @@ jump() {
 
 		# add current folder
 		if [[ $choice == 'a' ]]; then
-			echo $(pwd) >>$rc_file
-			local tmp=/tmp/rc_jump_$(date +%s)
-			cat $rc_file | sort | uniq >$tmp
-			mv $tmp $rc_file
-			return
-		fi
-
-		# remove exact match folder
-		if [[ $choice == 'r' ]]; then
-			local tmp=/tmp/rc_jump_$(date +%s)
-			cat $rc_file | grep -v "^$(pwd)$" | sort | uniq >$tmp
-			mv $tmp $rc_file
+			addVisit
 			return
 		fi
 
@@ -79,6 +81,7 @@ jump() {
 		if [[ $choice -gt 0 && $choice -le ${#jump_list[@]} ]]; then
 			selected_path="${jump_list[choice]}"
 			cd "$selected_path" || return
+			addVisit
 			echo "Navigated to: $selected_path"
 		elif [[ $choice -eq 0 ]]; then
 			return
@@ -90,6 +93,9 @@ jump() {
 	fi
 }
 
+addVisit() {
+	echo "$(date +%Y-%m-%dT%H:%M:%S) $(pwd)" >>"$log_file"
+}
 # quickly edit files that have recently been editted with this command
 quickEdit() {
 	# TODO: accept a filter param to reduce list

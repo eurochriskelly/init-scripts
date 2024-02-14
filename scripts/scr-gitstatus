@@ -1,24 +1,27 @@
-#!/bin/sh
+#!/bin/bash
 
 mygit() {
+	cd ~/Workspace/repos
+	local onbranch=""
+	local isupdated=""
 	# each of the folders here is a git directory
 	# enter each directory and check the git status.
 	# If the status is not clean, print the directory name and the status.
-	jumpList=""
 	clear
-	echo "Current directory: $(pwd)"
-	cd ~/Workspace/repos
-	ii=1
 	for dir in *; do
 		if [ -d "$dir" ]; then
-			cd "$dir"
-			if [ -d ".git" ]; then
+			cd "$dir" 2>/dev/null
+      # if .git folder is found and .is-ignore is not found
+      if [ -d .git ] && [ ! -f .is-ignore ]; then
+				# This is a git dir. We need to ...
+				# 1. check if there are any changes.
+				# 2. Check if we are on the main branch an if not print the repo and branch name
+				# 3. If working tree is clean, try to fetch and pull current branch
+
+				printf '\033[0;34m%-20s\033[0m > %s\n' "${dir}" "$(git status | grep 'On branch' | sed 's/On branch //')"
+				# 1. check if there are any changes.
 				if [ -z "$(git status | grep 'nothing to commit')" ]; then
-					# Add this directory to the jump list
-					jumpList="$jumpList $dir"
 					echo ""
-					echo -e "\e[33m${ii} ------------------- $dir -------------------\e[0m"
-					ii=$((ii + 1))
 					git status | grep 'On branch'
 					if [ -f MYGIT_TODO.org ]; then
 						echo "    --- todo list ---"
@@ -26,37 +29,27 @@ mygit() {
 							echo "    $line"
 						done
 					fi
-					git status | grep -v 'On branch'
+					git status |
+						grep -v 'On branch' |
+						grep -v 'use "git'
+				fi
+
+				# 3. Pull clean branches
+				if [ -n "$(git status | grep 'working tree clean')" ]; then
+					res="$(git pull)"
+					if [ -z "echo $res | grep Already up to date" ]; then
+						printf '\033[0;34m%-20s\033[0m > %s\n' "${dir}" "Updated"
+					fi
 				fi
 			fi
 			cd ..
 		fi
 	done
-	offerSwitch
 }
 
-offerSwitch() {
-	echo -ne "\e[33mSwitch to a directory? (y/n): \e[0m"
-	read choice
-	if [ "$choice" = "y" ]; then
-		echo -n "Enter the number of the directory: "
-		read choiceNum
-
-		local i=1
-		local found=""
-
-		# Convert jumpList into a newline-separated format and iterate over it
-		echo "$jumpList" | tr ' ' '\n' | while read dir; do
-			if [ "$i" -eq "$((choiceNum + 1))" ]; then
-				cd "$dir" && echo "Switched to $dir"
-				found="yes"
-				break # Note: 'break' won't work as expected in a pipe
-			fi
-			i=$((i + 1))
-		done
-
-		if [ -z "$found" ]; then
-			echo "Invalid directory number or unable to switch directory."
-		fi
-	fi
+hh() {
+	# print in yellow the line passed by user
+	echo -e "\e[33m$@\e[0m"
 }
+
+
