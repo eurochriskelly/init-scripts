@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/bin/sh
+#
 #
 # Jump to a folder quickly
 #
@@ -32,6 +33,7 @@ jump() {
 					jump_list+=("$line")
 				fi
 			fi
+
 		done <"$rc_file"
 
 		if [[ ${#jump_list[@]} -eq 0 ]]; then
