@@ -41,8 +41,13 @@ jump() {
 
 		for ((i = 1; i <= ${#jump_list[@]}; i++)); do
 			item=${jump_list[i]}
+      # if item contains the value of $HOME, replace it with ~
+      if [[ $item == *"$HOME"* ]]; then
+        item=${item/$HOME/\~}
+      fi
 			echo "$((i)). $item"
 		done
+
 		local prompt=""
 		prompt="${prompt}Enter jump "
 		prompt="${prompt}\033[33m#\033[0m "
