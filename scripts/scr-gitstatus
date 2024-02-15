@@ -1,28 +1,50 @@
 #!/bin/bash
 
 mygit() {
+	clear
+	echo "Checking repos, please wait..."
+	output="$(mygit_impl)"
+	echo "$(fixOutput "$output")"
+}
+
+fixOutput() {
+	local output="$1"
+	hh "Active repos ..."
+	echo "$output" | grep -v '.*!$' | while read line; do
+		echo -e "  $line"
+	done
+	echo ""
+	hh "Inactive repos ..."
+	echo ""
+	echo "$output" | grep '.*!$' | while read line; do
+		echo -e "  $line"
+	done
+}
+
+mygit_impl() {
 	cd ~/Workspace/repos
 	local onbranch=""
 	local isupdated=""
 	# each of the folders here is a git directory
 	# enter each directory and check the git status.
 	# If the status is not clean, print the directory name and the status.
-	clear
 	for dir in *; do
 		if [ -d "$dir" ]; then
 			cd "$dir" 2>/dev/null
-      # if .git folder is found and .is-ignore is not found
-      if [ -d .git ] && [ ! -f .is-ignore ]; then
+			# if .git folder is found and .is-ignore is not found
+			if [ -d .git ] && [ ! -f .is-ignore ]; then
 				# This is a git dir. We need to ...
 				# 1. check if there are any changes.
 				# 2. Check if we are on the main branch an if not print the repo and branch name
 				# 3. If working tree is clean, try to fetch and pull current branch
 
-				printf '\033[0;34m%-20s\033[0m > %s\n' "${dir}" "$(git status | grep 'On branch' | sed 's/On branch //')"
+				branch="$(git status | grep 'On branch' | sed 's/On branch //')"
+				printf '\n\033[0;34m%-20s\033[0m > %s' "${dir}" "${branch}"
 				# 1. check if there are any changes.
+				dirty=0
 				if [ -z "$(git status | grep 'nothing to commit')" ]; then
 					echo ""
-					git status | grep 'On branch'
+					dirty=1
 					if [ -f MYGIT_TODO.org ]; then
 						echo "    --- todo list ---"
 						cat MYGIT_TODO.org | while read line; do
@@ -31,7 +53,9 @@ mygit() {
 					fi
 					git status |
 						grep -v 'On branch' |
-						grep -v 'use "git'
+						grep -v 'use "git' | while read line; do
+						echo "~  $line"
+					done
 				fi
 
 				# 3. Pull clean branches
@@ -41,6 +65,12 @@ mygit() {
 						printf '\033[0;34m%-20s\033[0m > %s\n' "${dir}" "Updated"
 					fi
 				fi
+
+				# Mark clean repos
+				if [ "$dirty" -eq 0 ] && [ "$branch" = "main" -o "$branch" = "master" ]; then
+					echo -n " !"
+				fi
+
 			fi
 			cd ..
 		fi
@@ -51,5 +81,3 @@ hh() {
 	# print in yellow the line passed by user
 	echo -e "\e[33m$@\e[0m"
 }
-
-
