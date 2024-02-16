@@ -5,6 +5,7 @@ mygit() {
 	echo "Checking repos, please wait..."
 	output="$(mygit_impl)"
 	echo "$(fixOutput "$output")"
+  echo ""
 }
 
 fixOutput() {
