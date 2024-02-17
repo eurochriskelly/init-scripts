@@ -1,4 +1,14 @@
-#!/bin/bash
+!/bin/bash
+
+priv=$HOME/Workspace/repos/init-scripts/scripts/bash_common_private.sh
+if [ -f "$priv" ]; then
+	echo "Sourcing private bash"
+	source "$priv"
+else
+	ls $HOME/Workspace/repos/init-scripts
+	echo "Could not source private shared vars"
+	exit 1
+fi
 
 ISPATH="$REPO_DIR/init-scripts"
 
@@ -51,15 +61,6 @@ alias ds2="dirSizer 2"
 alias ds3="dirSizer 3"
 alias ds4="dirSizer 4"
 
-priv=$HOME/Workspace/repos/init-scripts/scripts/bash_common_private.sh
-if [ -f "$priv" ]; then
-	echo "Sourcing private bash"
-	source "$priv"
-else
-	ls $HOME/Workspace/repos/init-scripts
-	echo "Could not source private shared vars"
-	exit 1
-fi
 
 # Dependent on private vars
 vimgolf() {
