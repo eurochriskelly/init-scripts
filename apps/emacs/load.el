@@ -1,6 +1,9 @@
 ;; Determine the directory of the current script
 (message "---------------------")
 (message "Loading my scripts ..")
+;; load theme early to reduce "flashing"
+(when (custom-theme-p 'chyla)
+  (load-theme 'chyla t))
 (defvar current-dir (file-name-directory load-file-name))
 
 ;; Load other scripts using the determined directory
@@ -22,7 +25,6 @@
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
 
 (put 'narrow-to-region 'disabled nil)
-
 ;; Customizations
 (load-file (concat current-dir "./my-org.el"))
 
