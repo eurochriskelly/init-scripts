@@ -64,7 +64,7 @@ jump() {
 		# edit the list
 		if [[ $choice == 'e' ]]; then
 			echo "EDITOR: $EDITOR"
-			eval "$EDITOR $rc_file"
+			eval "$EDITOR $jump_file"
 			return
 		fi
 
