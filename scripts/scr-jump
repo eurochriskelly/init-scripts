@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 #
 # Jump to a folder quickly
@@ -7,147 +7,73 @@
 
 rc_file="$HOME/.jump.rc"
 log_file="$HOME/.jump.log"
-touch $rc_file $log_file
+touch "$rc_file" "$log_file"
 
 jump() {
-	local jump_list
+	local jump_list=()
 	local choice
 
-	sort $log_file | head -n 1000 | awk '{print $2}' | sort | uniq -c | sort -nr | awk '{print $2}' >$rc_file
-	jump_list=()
+	sort "$log_file" | head -n 1000 | awk '{print $2}' | sort | uniq -c | sort -nr | awk '{print $2}' > "$rc_file"
 
 	if [[ -f "$rc_file" ]]; then
-		echo "\033[33mChoose folder to jump to:\033[0m"
+		echo -e "\033[33mChoose folder to jump to:\033[0m"
 		while IFS= read -r line; do
 			if [ -z "$line" ]; then
 				continue
 			fi
 
-			if [ -n "$1" ]; then
-				echo ">>${1}<<"
-				if [[ "$line" == *"$1"* ]]; then
+			if [ -n "$1" ] && [[ "$line" == *"$1"* ]]; then
 					jump_list+=("$line")
-				fi
-			else
-				if [ -n "$line" ]; then
+			elif [ -n "$line" ]; then
 					jump_list+=("$line")
-				fi
 			fi
 
-		done <"$rc_file"
+		done < "$rc_file"
 
 		if [[ ${#jump_list[@]} -eq 0 ]]; then
 			echo "No jump paths found in $rc_file"
 			return
 		fi
 
-		for ((i = 1; i <= ${#jump_list[@]}; i++)); do
-			item=${jump_list[i]}
-      # if item contains the value of $HOME, replace it with ~
-      if [[ $item == *"$HOME"* ]]; then
-        item=${item/$HOME/\~}
-      fi
-			echo "$((i)). $item"
+		for ((i = 0; i < ${#jump_list[@]}; i++)); do
+			item="${jump_list[i]}"
+			if [[ $item == *"$HOME"* ]]; then
+				item="${item//"$HOME"/\~}"
+			fi
+			echo "$((i + 1)). $item"
 		done
 
-		local prompt=""
-		prompt="${prompt}Enter jump "
-		prompt="${prompt}\033[33m#\033[0m "
-		prompt="${prompt}\033[34m[\033[0m"
-		prompt="${prompt}\033[33mEdit\033[0m"
-		prompt="${prompt}\033[34m|\033[0m"
-		prompt="${prompt}\033[33mAdd\033[0m"
-		prompt="${prompt}\033[34m):\033[0m "
-		echo -e $prompt
-		read choice
+		local prompt="Enter jump \033[33m#\033[0m \033[34m[\033[0m\033[33mEdit\033[0m\033[34m|\033[0m\033[33mAdd\033[0m\033[34m):\033[0m "
+		echo -e "$prompt"
+		read -r choice
 
-		# edit the list
-		if [[ $choice == 'e' ]]; then
-			echo "EDITOR: $EDITOR"
-			eval "$EDITOR $jump_file"
-			return
-		fi
-
-		# add current folder
-		if [[ $choice == 'a' ]]; then
-			addVisit
-			return
-		fi
-
-		if [[ $choice == "x" ]]; then
-			choice=0
-		fi
-
-		if [[ $choice -gt 0 && $choice -le ${#jump_list[@]} ]]; then
-			selected_path="${jump_list[choice]}"
-			cd "$selected_path" || return
-			addVisit
-			echo "Navigated to: $selected_path"
-		elif [[ $choice -eq 0 ]]; then
-			return
-		else
-			echo "Invalid choice. Please enter a valid number."
-		fi
+		case "$choice" in
+			e)
+				echo "EDITOR: $EDITOR"
+				eval "$EDITOR $rc_file"
+				;;
+			a)
+				addVisit
+				;;
+			x)
+				return
+				;;
+			*)
+				if [[ $choice =~ ^[0-9]+$ ]] && (( choice > 0 && choice <= ${#jump_list[@]} )); then
+					local selected_path="${jump_list[$((choice - 1))]}"
+					cd "$selected_path" || return
+					addVisit
+					echo "Navigated to: $selected_path"
+				else
+					echo "Invalid choice. Please enter a valid number."
+				fi
+				;;
+		esac
 	else
 		echo "File $rc_file not found"
 	fi
 }
 
 addVisit() {
-	echo "$(date +%Y-%m-%dT%H:%M:%S) $(pwd)" >>"$log_file"
-}
-# quickly edit files that have recently been editted with this command
-quickEdit() {
-	# TODO: accept a filter param to reduce list
-	echo "Welcome to quick edit!"
-	rc_file="$HOME/.quick-edit.rc"
-	if [ ! -f "$rc_file" ]; then touch $rc_file; fi
-	if [ "$#" -lt 1 ]; then
-		echo "Available files:"
-		declare selected_file
-		menu_select_file "$rc_file" selected_file
-		if [[ -n $selected_file ]]; then
-			# further increase priority
-			echo $selected_file >>$rc_file
-			eval $EDITOR $selected_file
-		else
-			echo "Nothing selected to edit!"
-			exit 0
-		fi
-	else
-		echo $(realpath $1) >>$rc_file
-		eval $EDITOR $1
-	fi
-}
-
-menu_select_file() {
-	local filepath="$1"
-	local -n return_var="$2"
-	if [[ ! -f "$filepath" ]]; then
-		echo "File not found: $filepath"
-		return 1
-	fi
-
-	# Read file and remove duplicates
-	local options=()
-	mapfile -t options < <(sort "$filepath" | uniq -c | sort -rn | awk '{ $1=""; print $0 }' | sed 's/^[ \t]*//')
-
-	# Show menu to user
-	for i in "${!options[@]}"; do
-		pi=$((i + 1))
-		f=${options[$i]}
-		b=$(basename $f)
-		printf "%5s %-20s %s\n" "$pi" "$b" "$f"
-	done
-
-	# Get user selection
-	read -p "Select a file: " selection
-
-	if [[ ! "$selection" =~ ^[0-9]+$ ]] || ((selection < 1 || selection > ${#options[@]})); then
-		echo "Invalid selection"
-		return 1
-	fi
-
-	# Store selected file path into the provided variable by reference
-	return_var="${options[$((selection - 1))]}"
+	echo "$(date +%Y-%m-%dT%H:%M:%S) $(pwd)" >> "$log_file"
 }
