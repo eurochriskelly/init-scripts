@@ -2,10 +2,12 @@
 (message "---------------------")
 (message "Loading my scripts ..")
 ;; load theme early to reduce "flashing"
-(when (custom-theme-p 'chyla)
-  (load-theme 'chyla t))
+(when (custom-theme-p 'adwaita)
+  (load-theme 'adwaita t))
 (defvar current-dir (file-name-directory load-file-name))
 
+(require 'evil)
+(evil-mode 1)
 ;; Load other scripts using the determined directory
 (load-file (concat current-dir "modes.el"))
 (load-file (concat current-dir "interface.el"))
