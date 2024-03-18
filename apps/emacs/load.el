@@ -6,8 +6,7 @@
   (load-theme 'adwaita t))
 (defvar current-dir (file-name-directory load-file-name))
 
-(require 'evil)
-(evil-mode 1)
+
 ;; Load other scripts using the determined directory
 (load-file (concat current-dir "modes.el"))
 (load-file (concat current-dir "interface.el"))

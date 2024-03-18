@@ -1,0 +1,25 @@
+#!/bin/bash
+
+mkdir -p ~/Workspace/questions
+
+ask() {
+  here=$(pwd)
+  today=$(date +"%Y-%m-%d")
+  now=$(date +"%s")
+  cd ~/Workspace/questions
+  mkdir -p $today
+  cd $today
+  touch ${now}.md
+  echo "# Custom instructions" > ${now}.md
+  echo "- Please only show code changes if there is code in the repsonse and where they need to be applied" >> ${now}.md
+  echo "" >> ${now}.md
+  echo "# Question" >> ${now}.md
+  echo "" >> ${now}.md
+  nvim ${now}.md
+  echo "Copying question to clipboard ..."
+  cat ${now}.md | pbcopy
+  cd $here
+}
+
+
+

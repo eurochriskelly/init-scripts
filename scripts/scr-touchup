@@ -1,0 +1,13 @@
+#!/bin/bash
+
+touchup() {
+  local choice=
+  select f in $(for c in $(git log master..HEAD --oneline|awk '{print $1}');do git diff-tree --no-commit-id --name-only -r $c;done|sort|uniq);do 
+    echo $f
+    choice=$f
+    if [ -n "$f" ];then break;fi
+  done
+
+  $EDITOR $choice
+}
+
