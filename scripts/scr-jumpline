@@ -1,0 +1,30 @@
+#!/bin/bash
+#
+
+jumpline() {
+	if [ $# -eq 0 ]; then
+		echo "Enter a search string: "
+		read searchString
+	else
+		searchString="$1"
+	fi
+
+	# Use ripgrep to find lines, with filename, line number, and part of the line
+	local IFS=$'\n' # Handle spaces in filenames
+	local files=($(rg --column --line-number --no-heading "$searchString" . | awk -F: -v OFS=: '{print $1,$2,$3,substr($0,index($0,$4),200)}'))
+
+	if [ ${#files[@]} -eq 0 ]; then
+		echo "No matches found."
+		return
+	fi
+
+	echo "Select a file to open:"
+	select option in "${files[@]}"; do
+		if [ -n "$option" ]; then
+			nvim +$(echo "$option" | cut -d: -f2) "$(echo "$option" | cut -d: -f1)"
+		else
+			echo "Invalid selection."
+		fi
+		break
+	done
+}

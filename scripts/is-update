@@ -15,6 +15,7 @@ cd "$(dirname "$0")"/..
 echo "Updating xresources ..."
 cp config/Xresources ~/.Xresources
 cp config/xinitrc ~/.xinitrc
+cp config/ripgreprc ~/.ripgreprc
 cd ~
 xrdb -merge .Xresources
 cd -
