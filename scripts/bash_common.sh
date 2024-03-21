@@ -1,4 +1,4 @@
-!/bin/bash
+#!/bin/bash
 
 sourcePriv() {
 	priv=$HOME/Workspace/repos/init-scripts/scripts/bash_common_private.sh
@@ -64,6 +64,9 @@ alias ds2="dirSizer 2"
 alias ds3="dirSizer 3"
 alias ds4="dirSizer 4"
 
+git config --global alias.todo '!sh -c '\''t=$(git rev-parse --show-toplevel)/MYGIT_TODO.org; if [ -f "$t" ]; then echo "======== ========";cat "$t"; echo "======== ========"; fi'\'
+git config --global alias.stat '!sh -c '\''t=$(git rev-parse --show-toplevel)/MYGIT_TODO.org; if [ -f "$t" ]; then echo "======== ========";cat "$t"; echo "======== ========"; fi; git status'\'
+export RIPGREP_CONFIG_PATH=~/.ripgreprc
 # Dependent on private vars
 vimgolf() {
 	# make sure challenge_id is set as $1
@@ -83,5 +86,6 @@ vimgolf() {
 	docker run -it --rm -e "key=${VIM_GOLF_KEY}" ghrc.io/filbranden/vimgolf $1
 }
 sourcePriv
+
 alias aaa="cat $ISPATH/scripts/bash_common.sh|grep \"^alias\"|awk '{print $2}'| awk -F= '{print $1}'"
 echo "Run 'aaa' to see aliases"
