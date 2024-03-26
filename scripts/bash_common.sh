@@ -16,6 +16,10 @@ sourcePriv
 ISPATH="$REPO_DIR/init-scripts"
 
 export EDITOR=nvim
+# if keys have been modded apply the mod
+if [ -f ~/.Xmodmap ];then
+  xmodmap ~/.Xmodmap
+fi
 
 # make scripts executable
 for file in "$ISPATH"/scripts/*; do
