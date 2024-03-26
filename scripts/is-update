@@ -15,9 +15,17 @@ cd "$(dirname "$0")"/..
 echo "Updating xresources ..."
 cp config/Xresources ~/.Xresources
 cp config/xinitrc ~/.xinitrc
+cp config/Xmodmap ~/.Xmodmap
 cp config/ripgreprc ~/.ripgreprc
 cd ~
 xrdb -merge .Xresources
+
+# if keys have been modded apply the mod
+if [ -f ~/.Xmodmap ];then
+  if [ -n "$(which xmodmap)" ];then
+    xmodmap ~/.Xmodmap
+  fi
+fi
 cd -
 
 # update emacs config

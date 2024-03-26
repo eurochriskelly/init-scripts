@@ -1,0 +1,4 @@
+keycode 172 = Left NoSymbol Left
+keycode 173 = Down NoSymbol Down
+keycode 171 = Up NoSymbol Up
+keycode 122 = Right NoSymbol Right
