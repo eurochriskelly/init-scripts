@@ -10,14 +10,15 @@ ask() {
   mkdir -p $today
   cd $today
   touch ${now}.md
-  echo "# Custom instructions" > ${now}.md
-  echo "- Please only show code changes if there is code in the repsonse and where they need to be applied" >> ${now}.md
-  echo "" >> ${now}.md
-  echo "# Question" >> ${now}.md
-  echo "" >> ${now}.md
+  echo "" > ${now}.md
   nvim ${now}.md
   echo "Copying question to clipboard ..."
-  cat ${now}.md | pbcopy
+  # Check if current os is linux
+  if [ "$OSTYPE" == "darwin"* ]; then
+    cat ${now}.md | pbcopy
+  else
+    cat ${now}.md | xclip
+  fi
   cd $here
 }
 

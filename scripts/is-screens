@@ -46,14 +46,21 @@ screentwo() {
     xrandr --output $mon2 --auto
 }
 screenone() {
+    local mode=$1
     xrandr --output $mon2 --off
-    xrandr --output $mon1 --mode 3840x2160
+    if [ "$mode" == "a" ];then
+      xrandr --output $mon1 --mode 3840x2160
+    else
+      xrandr --output $mon1 --mode 1920x1080
+    fi
     xrandr --output $mon1 --auto
 }
 twoscreens() {
-    screenone
+    # screenone
+    screenone a
     screentwo
-    xrandr --output $mon1 --auto --output $mon2 --auto --right-of $mon1
+    # place screen below
+    xrandr --output $mon1 --auto --output $mon2 --auto --below $mon1
 }
 
 main "$@"
