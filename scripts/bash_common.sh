@@ -44,12 +44,13 @@ for scr in $ISPATH/scripts/scr-*; do
 done
 
 alias src='source $HOME/.zshrc'
+alias last='ls -ltd */ | head -n 8'
 alias ssh-mac='ssh -q $MACVM'
 alias fuse-mac='sshfs $MACVM:/Users/${MACUSER}/Workspace ~/Workspace/mac'
 if [ -n "$(which pbcopy)" ]; then
-	alias pb='echo "">/tmp/pb;et /tmp/pb;cat /tmp/pb | pbcopy'
+	alias pb='echo "">/tmp/pb;nvim /tmp/pb;cat /tmp/pb | pbcopy'
 else
-	alias pb='echo "">/tmp/pb;et /tmp/pb;cat /tmp/pb | xclip -selection clipboard'
+	alias pb='echo "">/tmp/pb;nvim /tmp/pb;cat /tmp/pb | xclip -selection clipboard'
 fi
 alias et='emacsClientHereText'
 alias etg='emacsClientHereGui'
