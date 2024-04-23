@@ -2,7 +2,6 @@
 ;;
 (in-package :stumpwm)
 (load-module "swm-gaps")
-
 (load "~/.stumpwm.d/mode-line.lisp")
 (load "~/.stumpwm.d/ck-apps.lisp")
 
@@ -43,10 +42,16 @@
 (define-key *root-map* (kbd "q") "fullscreen")
 (define-key *root-map* (kbd "l") "move-focus right")
 (undefine-key *root-map* (kbd "k"))
+
+(define-key *root-map* (kbd "M-h") "move-window left")
+(define-key *root-map* (kbd "M-j") "move-window down")
+(define-key *root-map* (kbd "M-k") "move-window up")
+(define-key *root-map* (kbd "M-l") "move-window right")
+(define-key *root-map* (kbd "M-Down") "move-window down")
+
 (define-key *root-map* (kbd "Up") "move-focus up")
 (define-key *root-map* (kbd "Down") "move-focus down")
 (define-key *root-map* (kbd "RET") "move-focus down")
-(define-key *root-map* (kbd "M-Down") "move-window down")
 (define-key *root-map* (kbd "j") "move-focus down")
 (define-key *root-map* (kbd "e") "exec emacsclient-snapshot -c")
 (define-key *root-map* (kbd "C-e") "exec emacs-snapshot")
@@ -71,8 +76,7 @@
 
 (set-fg-color "#000000")
 (set-bg-color "#00ff00")
-(set-focus-color "#ff0000")
+(set-focus-color "#ff4400")
 (set-border-color "#00ff00")
 (set-msg-border-width 10)
-
 
