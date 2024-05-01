@@ -58,6 +58,7 @@ alias etg='emacsClientHereGui'
 alias be='emacs-snapshot $HOME/.bashrc'
 alias j='jump'
 alias e='quickEdit'
+alias arrows='xmodmap ~/.Xmodmap'
 
 # easy to remember aliases for init scripts
 alias screens="is-screens"
