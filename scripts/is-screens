@@ -34,8 +34,7 @@ check_missing_mode() {
     mode="1920x1080_60.00"
     modeExists=$(xrandr -q | awk '/^'$mon2' /{flag=1; next} /^ /{if(flag) print}' | grep "$mode")
     if [ -z "$modeExists" ]; then
-        echo "Adding new mode!"
-        xrandr --newmode "1920x1080_60.00" 173.00  1920 2048 2248 2576  1080 1083 1088 1120 -hsync +vsync
+        echo "Adding new mode!" xrandr --newmode "1920x1080_60.00" 173.00  1920 2048 2248 2576  1080 1083 1088 1120 -hsync +vsync
         xrandr --addmode $mon2 "1920x1080_60.00"
     fi
 }
@@ -49,7 +48,7 @@ screenone() {
     local mode=$1
     xrandr --output $mon2 --off
     if [ "$mode" == "a" ];then
-      xrandr --output $mon1 --mode 3840x2160
+      xrandr --output $mon1 --mode 2560x1440
     else
       xrandr --output $mon1 --mode 1920x1080
     fi
@@ -61,6 +60,6 @@ twoscreens() {
     screentwo
     # place screen below
     xrandr --output $mon1 --auto --output $mon2 --auto --below $mon1
+    xrandr --output $mon1 --auto --output $mon2 --auto --right-of $mon1
 }
-
 main "$@"
