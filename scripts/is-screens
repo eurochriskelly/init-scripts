@@ -60,6 +60,6 @@ twoscreens() {
     screentwo
     # place screen below
     xrandr --output $mon1 --auto --output $mon2 --auto --below $mon1
-    xrandr --output $mon1 --auto --output $mon2 --auto --right-of $mon1
+    #xrandr --output $mon1 --auto --output $mon2 --auto --right-of $mon1
 }
 main "$@"
