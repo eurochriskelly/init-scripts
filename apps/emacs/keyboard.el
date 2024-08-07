@@ -8,3 +8,4 @@
 
 (global-set-key (kbd "C-c r") 'reload-init-file)
 (global-set-key (kbd "C-h k") 'beginning-of-buffer)
+(global-set-key (kbd "C-h j") 'end-of-buffer)
