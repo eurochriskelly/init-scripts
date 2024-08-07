@@ -7,3 +7,4 @@
   (message "Init file reloaded."))
 
 (global-set-key (kbd "C-c r") 'reload-init-file)
+(global-set-key (kbd "C-h k") 'beginning-of-buffer)
