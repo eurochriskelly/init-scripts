@@ -56,7 +56,7 @@ alias et='emacsClientHereText'
 alias etg='emacsClientHereGui'
 # TODO: better to maintain recent list and sort by frequency
 alias be='emacs-snapshot $HOME/.bashrc'
-alias j='jump'
+alias j='jump $@'
 alias e='quickEdit'
 alias arrows='xmodmap ~/.Xmodmap'
 

@@ -1,8 +1,5 @@
 #!/bin/bash
-#
-#
 # Jump to a folder quickly
-#
 #
 
 rc_file="$HOME/.jump.rc"
@@ -12,6 +9,7 @@ touch "$rc_file" "$log_file"
 jump() {
 	local jump_list=()
 	local choice
+	local search_str="$1"  # Capture the first argument as the search string
 
 	sort "$log_file" | head -n 1000 | awk '{print $2}' | sort | uniq -c | sort -nr | awk '{print $2}' > "$rc_file"
 
@@ -22,16 +20,18 @@ jump() {
 				continue
 			fi
 
-			if [ -n "$1" ] && [[ "$line" == *"$1"* ]]; then
+			# Check if search string is provided and match the line with the search string
+			if [ -n "$search_str" ]; then
+				if [[ "$line" == *"$search_str"* ]]; then
 					jump_list+=("$line")
-			elif [ -n "$line" ]; then
-					jump_list+=("$line")
+				fi
+			else
+				jump_list+=("$line")
 			fi
-
 		done < "$rc_file"
 
 		if [[ ${#jump_list[@]} -eq 0 ]]; then
-			echo "No jump paths found in $rc_file"
+			echo "No jump paths found matching '$search_str'"
 			return
 		fi
 
