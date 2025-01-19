@@ -3,44 +3,51 @@
 # Output file
 output_file="all_files_concatenated.txt"
 exclude_files=("package-lock.json")
-exclude_dirs=("node_modules")
 
-# Function to recursively process files
+# Function to process files
 process_files() {
-    local dir="$1"
-    local indent="$2"
+    local indent="$1"
 
-    for entry in "$dir"/*; do
-        # Skip excluded directories
-        for exclude in "${exclude_dirs[@]}"; do
-            [[ "$entry" == */$exclude* ]] && continue 2
+    git ls-files | while read -r file; do
+        # Skip excluded files
+        for exclude in "${exclude_files[@]}"; do
+            if [[ "$file" == "$exclude" ]]; then
+                continue 2
+            fi
         done
 
-        if [ -f "$entry" ]; then
-            # Skip excluded files
-            for exclude in "${exclude_files[@]}"; do
-                [[ "$(basename "$entry")" == "$exclude" ]] && continue 2
-            done
-
+        # Check if file exists (in case of issues like deleted files still in index)
+        if [ -f "$file" ]; then
             # Add file content to output
-            echo -e "\n$indent### File: $entry ###\n" >> "$output_file"
-            cat "$entry" >> "$output_file"
-        elif [ -d "$entry" ]; then
-            echo -e "\n$indent### Directory: $entry ###\n" >> "$output_file"
-            process_files "$entry" "$indent  "
+            echo -e "\n$indent### File: $file ###\n" >> "$output_file"
+            cat "$file" >> "$output_file"
         fi
     done
 }
 
-# Count all files, excluding specified files/directories
+# Count files using git ls-files
 count_files() {
-    find . -type f ! -path "./node_modules/*" ! -name "package-lock.json" | wc -l
+    git ls-files | while read -r file; do
+        # Skip excluded files
+        for exclude in "${exclude_files[@]}"; do
+            if [[ "$file" == "$exclude" ]]; then
+                continue 2
+            fi
+        done
+        echo "$file"
+    done | wc -l
 }
 
+# Ensure the script is run inside a git repository
+if ! git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
+    echo "Error: This script must be run inside a git repository."
+    exit 1
+fi
+
 # Main script logic
-echo "Scanning directory for files..."
+echo "Scanning directory for tracked files (excluding .gitignore and $exclude_files)..."
 file_count=$(count_files)
-echo "Found $file_count files (excluding specified files/directories)."
+echo "Found $file_count files."
 
 # Prompt the user before proceeding
 read -p "Do you wish to proceed? (y/n): " proceed
@@ -52,7 +59,7 @@ fi
 # Clear output file
 > "$output_file"
 
-# Start processing from the current directory
-process_files "." ""
+# Process files and generate output
+process_files ""
 
 echo "Concatenation complete! Output saved to $output_file"
