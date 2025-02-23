@@ -3,7 +3,7 @@
 # Output file
 output_file="all_files_concatenated.txt"
 file_list="/tmp/pd_files_to_be_processed"
-exclude_files=("package-lock.json")
+exclude_files=("package-lock.json" "yarn.lock")
 
 # Function to generate the list of files
 generate_file_list() {
@@ -32,8 +32,22 @@ process_files() {
 # Function to preview files
 preview_files() {
     echo "Previewing files to be processed:"
-    cat "$file_list"
+    while IFS= read -r file; do
+        if [ -f "$file" ]; then
+            size=$(du -h "$file" | cut -f1)
+            printf "%-10s %s\n" "$size" "$file"
+        else
+            echo "File not found: $file"
+        fi
+    done < "$file_list"
     echo
+}
+
+# Function to edit the file list
+edit_file_list() {
+    echo "Opening file list for editing..."
+    nvim "$file_list"
+    echo "File list edited. Resuming process..."
 }
 
 # Ensure the script is run inside a git repository
@@ -49,7 +63,7 @@ file_count=$(wc -l < "$file_list")
 echo "Found $file_count files to process. File list saved to $file_list."
 
 while true; do
-    echo -n "Do you wish to proceed? (y/n/p to preview): "
+    echo -n "Do you wish to proceed? (y/n/p to preview/e to edit): "
     read -r choice
 
     case "$choice" in
@@ -68,8 +82,13 @@ while true; do
         p)
             preview_files
             ;;
+        e)
+            edit_file_list
+            ;;
         *)
-            echo "Invalid option. Please enter 'y', 'n', or 'p'."
+            echo "Invalid option. Please enter 'y', 'n', 'p', or 'e'."
             ;;
     esac
 done
+
+
