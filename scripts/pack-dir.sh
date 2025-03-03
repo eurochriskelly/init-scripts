@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Output file
-output_file="all_files_concatenated.txt"
+# Output file with .md extension
+output_file="/tmp/all_files_concatenated.md"
 file_list="/tmp/pd_files_to_be_processed"
 exclude_files=("package-lock.json" "yarn.lock")
 
@@ -20,12 +20,12 @@ generate_file_list() {
 
 # Function to process files
 process_files() {
-    local indent="$1"
+    local indent="    "
 
     while read -r file; do
-        # Add file content to output
+        # Add file content to output with indentation
         echo -e "\n$indent### File: $file ###\n" >> "$output_file"
-        cat "$file" >> "$output_file"
+        sed "s/^/$indent/" "$file" >> "$output_file"
     done < "$file_list"
 }
 
@@ -71,7 +71,7 @@ while true; do
             echo "Proceeding with file concatenation..."
             # Clear output file
             > "$output_file"
-            process_files ""
+            process_files
             echo "Concatenation complete! Output saved to $output_file."
             break
             ;;
