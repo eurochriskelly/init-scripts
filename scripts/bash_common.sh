@@ -32,7 +32,7 @@ if [ -z "$(which screens)" ]; then
 	export PATH="$PATH:${ISPATH}/scripts"
 fi
 
-# Source commands
+# Loop over scripts starting with 'scr-' in the directory
 find $ISPATH/scripts -name "*~" -exec rm {} \;
 for scr in $ISPATH/scripts/scr-*; do
 	if [ -f "$scr" ]; then
@@ -42,6 +42,13 @@ for scr in $ISPATH/scripts/scr-*; do
 		echo "Could not find script [$scr]"
 	fi
 done
+
+showCKAliases() {
+  echo "Aliases generated from scripts:"
+  # show a list of all aliases with a number and allow the user to select one
+  # to run
+  alias | grep "ck_" | awk '{print "  " $1}' | awk -F= '{print $1}' | cat -n
+}
 
 alias src='source $HOME/.zshrc'
 alias last='ls -ltd */ | head -n 8'

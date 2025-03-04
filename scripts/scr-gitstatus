@@ -44,6 +44,8 @@ mygit_impl() {
 				# 1. check if there are any changes.
 				dirty=0
 				if [ -z "$(git status | grep 'nothing to commit')" ]; then
+					# Add this directory to the jump list
+					jumpList+=("$dir")
 					echo ""
 					dirty=1
 					if [ -f MYGIT_TODO.org ]; then
@@ -76,6 +78,23 @@ mygit_impl() {
 			cd ..
 		fi
 	done
+	# Offer to jump to a directory
+	echo "jump list $jumpList"
+  echo "Count of jump list ${#jumpList[@]}"
+	if [ "${#jumpList[@]}" -gt "0" ]; then
+		echo ""
+		echo -e "\e[33mJump to a directory\e[0m"
+		for i in "${!jumpList[@]}"; do
+			echo -e "\e[33m${i} ${jumpList[$i]}\e[0m"
+		done
+		echo -e "\e[33mEnter the number of the directory to jump to\e[0m"
+		read -p "Enter a number: " jumpTo
+		if [[ $jumpTo =~ ^[0-9]+$ ]] && [ "$jumpTo" -ge 0 ] && [ "$jumpTo" -lt "${#jumpList[@]}" ]; then
+			cd "${jumpList[$jumpTo]}"
+		else
+			echo "Invalid selection."
+		fi
+	fi
 }
 
 hh() {

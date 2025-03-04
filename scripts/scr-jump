@@ -77,3 +77,5 @@ jump() {
 addVisit() {
 	echo "$(date +%Y-%m-%dT%H:%M:%S) $(pwd)" >> "$log_file"
 }
+
+main "$@"
