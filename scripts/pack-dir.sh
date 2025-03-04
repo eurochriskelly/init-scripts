@@ -22,6 +22,12 @@ generate_file_list() {
 process_files() {
     local indent="    "
 
+    echo "   # The content of the following files is listed below:" > $output_file
+    while read -r file; do
+        # Add file content to output with indentation
+        echo -e "${indent}- $file" >> "$output_file"
+    done < "$file_list"
+    echo "" >> $output_file
     while read -r file; do
         # Add file content to output with indentation
         echo -e "\n$indent### File: $file ###\n" >> "$output_file"
