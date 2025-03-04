@@ -3,7 +3,7 @@ SRC_DIR := scripts
 DEST_DIR := /usr/local/bin
 
 # List of scripts to install (with extensions)
-SCRIPTS := pack-dir.sh old-grepper.sh # foo-bar.sh # add files here
+SCRIPTS := pack-dir.sh old-grepper.sh branch-diff.sh # foo-bar.sh # add files here
 
 # Default rule (optional, just prints help)
 .PHONY: all
