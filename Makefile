@@ -3,7 +3,7 @@ SRC_DIR := scripts
 DEST_DIR := /usr/local/bin
 
 # List of scripts to install (with extensions)
-SCRIPTS := pack-dir.sh old-grepper.sh branch-diff.sh # foo-bar.sh # add files here
+SCRIPTS := pack-dir.sh old-grepper.sh branch-diff.sh docker-checkpoint.sh # foo-bar.sh # add files here
 
 # Default rule (optional, just prints help)
 .PHONY: all
@@ -16,9 +16,13 @@ install:
 	@echo "Installing scripts to $(DEST_DIR)..."
 	@for script in $(SCRIPTS); do \
 		src_path="$(SRC_DIR)/$$script"; \
-		dest_path="$(DEST_DIR)/$$(basename $$script .sh)"; \
+		base_name="$$(basename $$script .sh)"; \
+		dest_path="$(DEST_DIR)/$$base_name"; \
+		ck_dest_path="$(DEST_DIR)/ck-$$base_name"; \
 		echo "Installing $$src_path to $$dest_path..."; \
 		install -m 755 "$$src_path" "$$dest_path"; \
+		echo "Installing $$src_path to $$ck_dest_path..."; \
+		install -m 755 "$$src_path" "$$ck_dest_path"; \
 	done
 	@echo "Installation complete."
 

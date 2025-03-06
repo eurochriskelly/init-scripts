@@ -1,7 +1,9 @@
 #!/bin/bash
 
 # Output file with .md extension
-output_file="/tmp/all_files_concatenated.md"
+output_dir="/$HOME/Downloads"
+test -d "$output_dir" || mkdir -p "$output_dir"
+output_file="${output_dir}/all_files_concatenated.md"
 file_list="/tmp/pd_files_to_be_processed"
 exclude_files=("package-lock.json" "yarn.lock")
 
@@ -32,6 +34,7 @@ process_files() {
         # Add file content to output with indentation
         echo -e "\n$indent### File: $file ###\n" >> "$output_file"
         sed "s/^/$indent/" "$file" >> "$output_file"
+        echo -e "\n$indent---\n" >> "$output_file"
     done < "$file_list"
 }
 
@@ -54,6 +57,22 @@ edit_file_list() {
     echo "Opening file list for editing..."
     nvim "$file_list"
     echo "File list edited. Resuming process..."
+}
+
+copy_to_clipboard() {
+  if command -v pbcopy &>/dev/null; then
+    # macOS
+    pbcopy < "$1"
+  elif command -v xclip &>/dev/null; then
+    # Linux with xclip
+    xclip -selection clipboard < "$1"
+  elif command -v xsel &>/dev/null; then
+    # Linux with xsel
+    xsel --clipboard < "$1"
+  else
+    echo "No clipboard utility found. Please install pbcopy (macOS) or xclip/xsel (Linux)."
+    return 1
+  fi
 }
 
 # Ensure the script is run inside a git repository
@@ -79,6 +98,9 @@ while true; do
             > "$output_file"
             process_files
             echo "Concatenation complete! Output saved to $output_file."
+            ls -al "$output_file"
+            copy_to_clipboard $output_file
+            echo "Output copied to clipboard."
             break
             ;;
         n)
